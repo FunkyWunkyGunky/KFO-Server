@@ -5,6 +5,7 @@ from discord.ext import commands
 from discord.utils import escape_markdown
 from discord.errors import Forbidden, HTTPException
 
+
 class Bridgebot(commands.Bot):
     """
     The AO2 Discord bridge self.
@@ -57,7 +58,7 @@ class Bridgebot(commands.Bot):
         if message.channel != self.channel:
             return
 
-        if not message.content.startswith('$'):
+        if not message.content.startswith('$') and not message.content.startswith(";"):
             try:
                 max_char = int(self.server.config['max_chars_ic'])
             except:
@@ -65,11 +66,26 @@ class Bridgebot(commands.Bot):
             if len(message.clean_content) > max_char:
                 await self.channel.send('Your message was too long - it was not received by the client. (The limit is 256 characters)')
                 return
+
             self.server.send_discord_chat(message.author.display_name, escape_markdown(message.clean_content), self.hub_id, self.area_id)
+        
+        # Please forgive my sins
+        if message.content.startswith(";"):
+            try:
+                max_char = int(self.server.config['max_chars']) + 1
+            except:
+                max_char = 257
+            if len(message.clean_content) > max_char:
+                await self.channel.send('Your message was too long - it was not received by the client. (The limit is 256 characters)')
+                return
+
+            self.server.send_discord_ooc(message.author.display_name, escape_markdown(message.clean_content[1:]), self.hub_id, self.area_id)
 
         # await self.process_commands(message)
     
-    async def send_char_message(self, name, message, avatar=None):
+    async def send_char_message(self, name, message, avatar=None): 
+        # Please forgive my sins and don't kill me
+        avatar = None # This is where you should link the avatar url for the webhook. Ensure it's 1:1. 
         webhook = None
         try:
             webhooks = await self.channel.webhooks()
@@ -89,3 +105,4 @@ class Bridgebot(commands.Bot):
             # This is a workaround to a problem - [Errno 104] Connection reset by peer occurs due to too many calls for this func.
             # Simple solution is to increase the tickspeed config so it waits longer between messages sent.
             print(f'[DiscordBridge] Exception - {ex}')
+            
