@@ -948,6 +948,31 @@ class AOProtocol(asyncio.Protocol):
             'CT',
             f'[{self.client.area.id}]{name}',
             args[1])
+        
+        # Discord Bridgebot
+        # Please forgive my sins
+        if 'bridgebot' in self.server.config and self.server.config['bridgebot']['enabled'] and \
+            self.client.area.area_manager.id == self.server.bridgebot.hub_id and self.client.area.id == self.server.bridgebot.area_id:
+            webname = f"{args[0]} [OOC]" # [OOC] is changable.
+            text = args[1]
+
+            # you'll hate me for this
+            # yes i hate myself too
+            text = text.replace('}', '').replace('{', '').replace('`', '').replace('|', '').replace('~', '').replace('º', '').replace('№', '').replace('√', '').replace('\\s', '').replace('\\f', '')
+            # escape chars
+            text = text.replace('@', '@\u200b') # The only way to escape a Discord ping is a zero width space...
+            text = text.replace('<num>', '\\#')
+            text = text.replace('<and>', '&')
+            text = text.replace('<percent>', '%')
+            text = text.replace('<dollar>', '$')
+            text = text.replace('*', '\\*')
+            text = text.replace('_', '\\_')
+            # String is empty if we're strippin
+            if not text.strip():
+                # Discord blankpost
+                text = '_ _'
+            self.server.bridgebot.queue_message(webname, text, self.client.char_name)
+        
         database.log_area('chat.ooc', self.client, self.client.area, message=args[1])
 
     def net_cmd_mc(self, args):
