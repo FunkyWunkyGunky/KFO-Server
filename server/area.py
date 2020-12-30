@@ -525,6 +525,10 @@ class Area:
             f'[{self.id}]' + self.server.config['hostname'],
             msg, '1')
     
+    # Please forgive my sin
+    def send_ooc(self, name, msg):
+        self.send_command('CT', name, msg, '1')
+    
     def send_ic(self, client, *args, targets=None):
         """
         Send an IC message from a client to all applicable clients in the area.
