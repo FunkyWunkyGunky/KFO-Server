@@ -489,7 +489,6 @@ class TsuServer3:
         area = self.hub_manager.get_hub_by_id(hub_id).get_area_by_id(area_id)
         cid = self.get_char_id_by_name(self.config['bridgebot']['character'])
         message = dezalgo(message)
-        message = remove_URL(message)
         message = message.replace('}', '\\}').replace('{', '\\{').replace('`', '\\`').replace('|', '\\|').replace('~', '\\~').replace('º', '\\º').replace('№', '\\№').replace('√', '\\√').replace('\\s', '').replace('\\f', '')
         message = message.replace('#', '<num>').replace('&', '<and>').replace('%', '<percent>').replace('$', '<dollar>')
         if len(name) > 30:
