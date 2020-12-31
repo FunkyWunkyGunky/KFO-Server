@@ -927,7 +927,7 @@ class AOProtocol(asyncio.Protocol):
 
         # Removed Mod prefix due to redundancy.
         prefix = ''
-        elif self.client in self.client.area.area_manager.owners:
+        if self.client in self.client.area.area_manager.owners:
             prefix = '[GM]'
         elif self.client in self.client.area._owners:
             name = '[CM]'
