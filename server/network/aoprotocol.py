@@ -647,11 +647,7 @@ class AOProtocol(asyncio.Protocol):
         # Update the showname ref for the client
         self.client.showname = showname
 
-        # Mod prefix if we're logged in as one
-        if self.client.is_mod:
-            if showname == '':
-                showname = self.client.char_name
-            showname = f'[M] {showname}'
+        # Mod prefix removed due to redundancy.
 
         # Here, we check the pair stuff, and save info about it to the client.
         # Notably, while we only get a charid_pair and an offset, we send back a chair_pair, an emote, a talker offset
@@ -929,9 +925,8 @@ class AOProtocol(asyncio.Protocol):
             self.client.send_ooc('Your message is too long!')
             return
 
+        # Removed Mod prefix due to redundancy.
         prefix = ''
-        if self.client.is_mod:
-            prefix = '[M]'
         elif self.client in self.client.area.area_manager.owners:
             prefix = '[GM]'
         elif self.client in self.client.area._owners:
